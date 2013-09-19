@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>My Tumblelog</title>
-    <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
-    <style>.content {padding-top: 80px;}</style>
+    <link href="{{ url_for('static', filename='css/main.css')}}" rel="stylesheet">
+   <style>.content {padding-top: 80px;}</style>
   </head>
 
   <body>
@@ -14,8 +14,12 @@
       <div class="fill">
         <div class="container">
           <h2>
-              <a href="/" class="brand">My Tumblelog</a> <small>Starring Flask, MongoDB and MongoEngine</small>
+            <a class="brand" href="/">My Tumblog</a>
+            <div class="brand"><small>A simple blog with image and video</small></div>
           </h2>
+          <div class="navi">
+              <a href="{{ url_for("admin.index") }}" class="btn primary">Login</a>
+          </div>
         </div>
       </div>
     </div>

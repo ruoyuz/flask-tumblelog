@@ -3,8 +3,8 @@ from flask.views import MethodView
 
 from flask.ext.mongoengine.wtf import model_form
 
-from tumblelog.auth import requires_auth
-from tumblelog.models import Post, BlogPost, Video, Image, Quote, Comment
+from tumblog.auth import requires_auth
+from tumblog.models import Post, Comment
 
 admin = Blueprint('admin', __name__, template_folder='templates')
 
@@ -13,39 +13,39 @@ class List(MethodView):
     decorators = [requires_auth]
     cls = Post
 
-    def get(self):
+    def get(self,slug=None):
         posts = self.cls.objects.all()
         return render_template('admin/list.html', posts=posts)
 
+class delList(MethodView):
+    decorators = [requires_auth]
+    cls = Post
+
+    def get(self,slug=None):
+        try:
+            post = self.cls.objects.get(slug=slug)
+            post.delete()
+        except:
+            pass
+        return redirect(url_for('admin.index'))
 
 class Detail(MethodView):
 
     decorators = [requires_auth]
-    # Map post types to models
-    class_map = {
-        'post': BlogPost,
-        'video': Video,
-        'image': Image,
-        'quote': Quote,
-    }
 
     def get_context(self, slug=None):
+        form_cls = model_form(Post, exclude=('created_at', 'comments'))
 
         if slug:
             post = Post.objects.get_or_404(slug=slug)
-            # Handle old posts types as well
-            cls = post.__class__ if post.__class__ != Post else BlogPost
-            form_cls = model_form(cls,  exclude=('created_at', 'comments'))
             if request.method == 'POST':
                 form = form_cls(request.form, inital=post._data)
             else:
                 form = form_cls(obj=post)
         else:
-            # Determine which post type we need
-            cls = self.class_map.get(request.args.get('type', 'post'))
-            post = cls()
-            form_cls = model_form(cls,  exclude=('created_at', 'comments'))
+            post = Post()
             form = form_cls(request.form)
+
         context = {
             "post": post,
             "form": form,
@@ -73,4 +73,5 @@ class Detail(MethodView):
 # Register the urls
 admin.add_url_rule('/admin/', view_func=List.as_view('index'))
 admin.add_url_rule('/admin/create/', defaults={'slug': None}, view_func=Detail.as_view('create'))
-admin.add_url_rule('/admin/<slug>/', view_func=Detail.as_view('edit'))
+admin.add_url_rule('/admin/edit?sid=<slug>/', view_func=Detail.as_view('edit'))
+admin.add_url_rule('/admin/delete?sid=<slug>/', view_func=delList.as_view('delete'))

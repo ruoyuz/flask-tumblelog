@@ -1,18 +1,14 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask.views import MethodView
-
 from flask.ext.mongoengine.wtf import model_form
-from tumblelog.models import Post, Comment
+from tumblog.models import Post, Comment
 
 posts = Blueprint('posts', __name__, template_folder='templates')
 
-
 class ListView(MethodView):
-
     def get(self):
         posts = Post.objects.all()
         return render_template('posts/list.html', posts=posts)
-
 
 class DetailView(MethodView):
 
@@ -45,8 +41,8 @@ class DetailView(MethodView):
             post.save()
 
             return redirect(url_for('posts.detail', slug=slug))
-        return render_template('posts/detail.html', **context)
 
+        return render_template('posts/detail.html', **context)
 
 # Register the urls
 posts.add_url_rule('/', view_func=ListView.as_view('list'))

@@ -1,25 +1,22 @@
+{% import "_forms.html" as forms %}
 {% extends "base.html" %}
-{% import '_forms.html' as forms %}
 
 {% block page_header %}
   <div class="page-header">
-    <h1>{{ post.title }}</h1>
+    <h1 class="title">{{ post.title }}</h1>
   </div>
 {% endblock %}
 
 {% block content %}
-  {% if post.body %}
-    {% if post.post_type == 'Quote' %}
-      <blockquote>{{ post.body }}</blockquote>
-      <p>{{ post.author }}</p>
-    {% else %}
-      <p>{{ post.body }}</p>
-    {% endif %}
-  {% endif %}
+
+<div class="middlemain">
   {% if post.embed_code %}
     {{ post.embed_code|safe() }}
+  {% elif post.image._url %}
+    <p><img src="{{ post.image_url }}" /><p>
   {% endif %}
-  {% if post.image_url %}
+  <p>{{ post.body }}</p>
+  {% if post.embed_code %}
     <p><img src="{{ post.image_url }}" /><p>
   {% endif %}
   <p>{{ post.created_at.strftime('%H:%M %Y-%m-%d') }}</p>
@@ -32,12 +29,17 @@
       {{ comment.text }}
     {% endfor %}
   {% endif %}
-  <hr>
-  <h2>Add a comment</h2>
-  <form action="." method="post">
-    {{ forms.render(form) }}
-    <div class="actions">
-      <input type="submit" class="btn primary" value="comment">
-    </div>
-  </form>
+    <hr>
+    <h2>Add a comment</h2>
+    <form action="." method="post">
+      {{ forms.render(form) }}
+      <div  style="padding-left: 150px;">
+        <input type="submit" class="btn primary" value="comment">
+      </div>
+    </form>
+</div>
+<div class="footdown">
+</div>
+<div class="actions">
+</div>
 {% endblock %}

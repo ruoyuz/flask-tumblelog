@@ -1,3 +1,16 @@
+Tumblog based on "A Flask Tumblelog"
+====================================
+
+A simple tumblelog with post, image and embed code for video.
+The tumblog is with several modifications:
+
+1. Layout is adjusted.
+2. Multimedia elements are encorporated when creating a new post.
+3. Posts now could be deleted.
+
+For installation and tutorials, please follow the instruction of original repo.
+
+
 A Flask Tumblelog
 =================
 
